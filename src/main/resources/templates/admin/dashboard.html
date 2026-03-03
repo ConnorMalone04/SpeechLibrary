@@ -1,17 +1,60 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <title>Admin Dashboard</title>
 </head>
+
 <body>
 
-<h1>Admin Dashboard</h1>
+<!-- Navbar -->
+<div class="navbar">
+    <a th:href="@{/}">Home</a>
 
-<ul>
-    <li><a th:href="@{/admin/topics}">Manage Topics</a></li>
-    <li><a th:href="@{/admin/people}">Manage People</a></li>
-    <li><a th:href="@{/admin/speeches}">Manage Speeches</a></li>
-</ul>
+    <span sec:authorize="hasRole('ADMIN')">
+        <a th:href="@{/admin}">Admin Dashboard</a>
+    </span>
+
+    <span sec:authorize="isAnonymous()">
+        <a th:href="@{/login}">Login</a>
+    </span>
+
+    <span sec:authorize="isAuthenticated()">
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-secondary">Logout</button>
+        </form>
+    </span>
+</div>
+
+<div class="page">
+    <div class="container">
+
+        <div class="card">
+            <h1 class="page-title">Admin Dashboard</h1>
+
+            <div class="dashboard-grid">
+                <a th:href="@{/admin/topics}" class="dashboard-card">
+                    <h3>Manage Topics</h3>
+                    <p class="muted">Create and organize speech topics</p>
+                </a>
+
+                <a th:href="@{/admin/people}" class="dashboard-card">
+                    <h3>Manage People</h3>
+                    <p class="muted">Add and edit speakers</p>
+                </a>
+
+                <a th:href="@{/admin/speeches}" class="dashboard-card">
+                    <h3>Manage Speeches</h3>
+                    <p class="muted">Create and maintain speeches</p>
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</div>
 
 </body>
 </html>

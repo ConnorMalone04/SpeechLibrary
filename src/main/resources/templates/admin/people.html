@@ -1,41 +1,86 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <title>Manage People</title>
 </head>
+
 <body>
 
-<h1>People</h1>
+<!-- Navbar -->
+<div class="navbar">
+    <a th:href="@{/}">Home</a>
 
-<a th:href="@{/admin/people/new}">Create New Person</a>
+    <span sec:authorize="hasRole('ADMIN')">
+        <a th:href="@{/admin}">Admin Dashboard</a>
+    </span>
 
-<table border="1">
-    <tr>
-        <th>Name</th>
-        <th>Bio</th>
-        <th>Actions</th>
-    </tr>
+    <span sec:authorize="isAnonymous()">
+        <a th:href="@{/login}">Login</a>
+    </span>
 
-    <tr th:each="person : ${people}">
-        <td th:text="${person.name}"></td>
-        <td th:text="${person.bio}"></td>
-        <td>
-            <a th:href="@{/admin/people/edit/{id}(id=${person.id})}">Edit</a>
+    <span sec:authorize="isAuthenticated()">
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-secondary">Logout</button>
+        </form>
+    </span>
+</div>
 
-            <form th:action="@{/admin/people/delete/{id}(id=${person.id})}"
-                  method="post"
-                  style="display:inline;">
-                <button type="submit"
-                        onclick="return confirm('Are you sure?');">
-                    Delete
-                </button>
-            </form>
-        </td>
-    </tr>
-</table>
+<div class="page">
+    <div class="container">
 
-<br>
-<a th:href="@{/admin}">Back to Dashboard</a>
+        <div class="card">
+
+            <h1 class="page-title">People</h1>
+
+            <a th:href="@{/admin/people/new}" 
+               class="btn btn-primary mb-20">
+                Create New Person
+            </a>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th style="width: 200px;">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="person : ${people}">
+                        <td th:text="${person.name}"></td>
+                        <td>
+                            <a th:href="@{/admin/people/edit/{id}(id=${person.id})}"
+                               class="btn btn-secondary">
+                                Edit
+                            </a>
+
+                            <form th:action="@{/admin/people/delete/{id}(id=${person.id})}"
+                                  method="post"
+                                  style="display:inline;">
+                                <button type="submit"
+                                        onclick="return confirm('Are you sure?');"
+                                        class="btn btn-danger">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <br>
+
+            <a th:href="@{/admin}" class="btn btn-secondary">
+                Back to Dashboard
+            </a>
+
+        </div>
+
+    </div>
+</div>
 
 </body>
 </html>

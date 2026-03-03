@@ -147,6 +147,7 @@ public class AdminController {
     public String newSpeechForm(Model model) {
         model.addAttribute("speech", new Speech());
         model.addAttribute("people", personRepository.findAll());
+        model.addAttribute("topics", topicRepository.findAll());
         return "admin/speech-form";
     }
 
@@ -157,6 +158,7 @@ public class AdminController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid speech id"));
         model.addAttribute("speech", speech);
         model.addAttribute("people", personRepository.findAll());
+        model.addAttribute("topics", topicRepository.findAll());
         return "admin/speech-form";
     }
 
@@ -165,6 +167,7 @@ public class AdminController {
     public String saveSpeech(Speech speech, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("people", personRepository.findAll());
+            model.addAttribute("topics", topicRepository.findAll());
             return "admin/speech-form";
         }
         speechRepository.save(speech);

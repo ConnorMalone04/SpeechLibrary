@@ -2,51 +2,47 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <title>Speech Library</title>
 </head>
 <body>
 
-<!-- Top Bar -->
-<div style="display:flex; justify-content:space-between; align-items:center;">
-    <h1>Speech Library</h1>
-    
-    <div>
-        <!-- Admin Dashboard link only for admins -->
-        <span sec:authorize="hasRole('ADMIN')">
-            <a th:href="@{/admin}">Admin Dashboard</a>
-        </span>
+<!-- Navbar -->
+<div class="navbar">
+    <h1 class="page-title">Speech Library</h1>
 
-        <!-- Login button only for anonymous users -->
-        <span sec:authorize="isAnonymous()">
-            <a th:href="@{/login}">Login</a>
-        </span>
+    <a th:href="@{/}" class="btn btn-secondary">Home</a>
 
-        <!-- Logout button only for authenticated users -->
-        <span sec:authorize="isAuthenticated()">
-            <form th:action="@{/logout}" method="post" style="display:inline">
-                <button type="submit">Logout</button>
-            </form>
-        </span>
-    </div>
+    <span sec:authorize="hasRole('ADMIN')">
+        <a th:href="@{/admin}" class="btn btn-secondary">Admin Dashboard</a>
+    </span>
+
+    <span sec:authorize="isAnonymous()">
+        <a th:href="@{/login}" class="btn btn-primary">Login</a>
+    </span>
+
+    <span sec:authorize="isAuthenticated()">
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-secondary">Logout</button>
+        </form>
+    </span>
 </div>
 
 <hr>
 
-<h2>All Speeches</h2>
+<div class="page">
+    <div class="container">
+        <div class="card">
+            <h2 class="page-title">All Speeches</h2>
 
-<ul>
-    <li th:each="speech : ${speeches}">
-        <a th:href="@{/speeches/{id}(id=${speech.id})}"
-           th:text="${speech.title}">
-        </a>
-        <span> - </span>
-        <span th:text="${speech.person.name}"></span>
-    </li>
-</ul>
-
-
-<div sec:authorize="hasRole('ADMIN')">
-    <a th:href="@{/admin/speeches/new}">Add New Speech</a>
+            <ul class="list">
+                <li th:each="speech : ${speeches}" class="list-item">
+                    <a th:href="@{/speeches/{id}(id=${speech.id})}" th:text="${speech.title}" class="speech-link"></a>
+                    <span th:text="' - ' + (${speech.person?.name} ?: 'Unknown')"></span>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 
 </body>

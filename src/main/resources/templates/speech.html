@@ -1,27 +1,49 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <title th:text="${speech.title}">Speech</title>
 </head>
 <body>
 
-<a th:href="@{/}">← Back to Home</a>
+<div class="navbar">
+    <a th:href="@{/}">Home</a>
+    <span sec:authorize="hasRole('ADMIN')">
+        <a th:href="@{/admin}">Admin Dashboard</a>
+    </span>
 
-<h1 th:text="${speech.title}"></h1>
+    <span sec:authorize="isAnonymous()">
+        <a th:href="@{/login}">Login</a>
+    </span>
 
-<h3>
-    By <span th:text="${speech.person.name}"></span>
-</h3>
+    <span sec:authorize="isAuthenticated()">
+        <form th:action="@{/logout}" method="post" style="display:inline">
+            <button type="submit" class="btn btn-secondary">Logout</button>
+        </form>
+    </span>
+</div>
 
-<p th:text="${speech.content}"></p>
+<div class="page">
+    <div class="container card">
 
-<div th:if="${speech.audioUrl != null}">
-    <p>
-        Audio:
-        <a th:href="${speech.audioUrl}" target="_blank">
-            Listen
-        </a>
-    </p>
+        <h1 th:text="${speech.title}" class="page-title"></h1>
+
+        <h3>By <span th:text="${speech.person?.name ?: 'Unknown'}"></span></h3>
+
+        <p th:text="${speech.content}" class="speech-content"></p>
+
+        <div th:if="${speech.audioUrl != null}">
+            <p>
+                Audio: 
+                <a th:href="${speech.audioUrl}" target="_blank" class="btn btn-primary btn-small">
+                    Listen
+                </a>
+            </p>
+        </div>
+
+        <br/>
+        <a th:href="@{/}" class="btn btn-secondary">Back to Library</a>
+    </div>
 </div>
 
 </body>

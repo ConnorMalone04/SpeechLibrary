@@ -27,6 +27,10 @@ public class Speech {
     @JoinColumn(name = "person_id")
     private Person person;
 
+    @ManyToOne
+    @JoinColumn(name = "topic_id")
+    private Topic topic;
+
     // getters and setters
 
     public Long getId() {
@@ -67,6 +71,14 @@ public class Speech {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    public Topic getTopic() {
+        return topic;
+    }
+    
+    public void setTopic(Topic topic) {
+        this.topic = topic;
     }
 
 }

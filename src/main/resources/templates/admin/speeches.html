@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>Manage Speeches</title>
+</head>
+
+<body>
+
+<div class="navbar">
+    <a th:href="@{/}">Home</a>
+
+    <span sec:authorize="hasRole('ADMIN')">
+        <a th:href="@{/admin}">Admin Dashboard</a>
+    </span>
+
+    <span sec:authorize="isAnonymous()">
+        <a th:href="@{/login}">Login</a>
+    </span>
+
+    <span sec:authorize="isAuthenticated()">
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-secondary">Logout</button>
+        </form>
+    </span>
+</div>
+
+<div class="page">
+    <div class="container">
+        <div class="card">
+
+            <h1 class="page-title">Speeches</h1>
+
+            <div class="mb-20">
+                <a th:href="@{/admin/speeches/new}" 
+                   class="btn btn-primary">
+                    Create New Speech
+                </a>
+            </div>
+
+            <!-- Empty state -->
+            <div th:if="${#lists.isEmpty(speeches)}" class="muted mb-20">
+                No speeches found. Create your first one.
+            </div>
+
+            <table class="table"
+                   th:if="${!#lists.isEmpty(speeches)}">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Person</th>
+                        <th>Topic</th>
+                        <th style="width:220px;">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="speech : ${speeches}">
+                        <td th:text="${speech.title}"></td>
+                        <td th:text="${speech.person?.name ?: '—'}"></td>
+                        <td th:text="${speech.topic?.name ?: '—'}"></td>
+                        <td>
+                            <div class="action-group">
+                                <a th:href="@{/admin/speeches/edit/{id}(id=${speech.id})}"
+                                   class="btn btn-secondary">
+                                    Edit
+                                </a>
+
+                                <form th:action="@{/admin/speeches/delete/{id}(id=${speech.id})}"
+                                      method="post">
+                                    <button type="submit"
+                                            onclick="return confirm('Are you sure?');"
+                                            class="btn btn-danger">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="mt-20">
+                <a th:href="@{/admin}" class="btn btn-secondary">
+                    Back to Dashboard
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

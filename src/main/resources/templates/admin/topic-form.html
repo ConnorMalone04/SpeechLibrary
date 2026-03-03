@@ -1,39 +1,74 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <title>Topic Form</title>
 </head>
+
 <body>
 
-<h1 th:text="${topic.id == null} ? 'Create Topic' : 'Edit Topic'"></h1>
+<div class="navbar">
+    <a th:href="@{/}">Home</a>
 
-<form th:action="@{/admin/topics/save}"
-      th:object="${topic}"
-      method="post">
+    <span sec:authorize="hasRole('ADMIN')">
+        <a th:href="@{/admin}">Admin Dashboard</a>
+    </span>
 
-    <input type="hidden" th:field="*{id}" />
+    <span sec:authorize="isAnonymous()">
+        <a th:href="@{/login}">Login</a>
+    </span>
 
-    <div>
-        <label>Name:</label>
-        <input type="text" th:field="*{name}" />
-        <div th:if="${#fields.hasErrors('name')}"
-             th:errors="*{name}"
-             style="color:red"></div>
+    <span sec:authorize="isAuthenticated()">
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-secondary">Logout</button>
+        </form>
+    </span>
+</div>
+
+<div class="page">
+    <div class="container">
+        <div class="card">
+
+            <h1 class="page-title"
+                th:text="${topic.id == null} ? 'Create Topic' : 'Edit Topic'">
+            </h1>
+
+            <form th:action="@{/admin/topics/save}"
+                  th:object="${topic}"
+                  method="post">
+
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input type="text"
+                           th:field="*{name}"
+                           class="form-control"/>
+
+                    <div th:if="${#fields.hasErrors('name')}"
+                         th:errors="*{name}"
+                         class="error-text">
+                    </div>
+                </div>
+
+                <div class="mt-20">
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
+
+                    <a th:href="@{/admin/topics}"
+                       class="btn btn-secondary">
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
     </div>
-
-    <div>
-        <label>Description:</label>
-        <input type="text" th:field="*{description}" />
-        <div th:if="${#fields.hasErrors('description')}"
-             th:errors="*{description}"
-             style="color:red"></div>
-    </div>
-
-    <button type="submit">Save</button>
-</form>
-
-<br>
-<a th:href="@{/admin/topics}">Back</a>
+</div>
 
 </body>
 </html>

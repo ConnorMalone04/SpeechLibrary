@@ -1,56 +1,120 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <title>Speech Form</title>
 </head>
+
 <body>
 
-<h1 th:text="${speech.id == null} ? 'Create Speech' : 'Edit Speech'"></h1>
+<!-- Navbar -->
+<div class="navbar">
+    <a th:href="@{/}">Home</a>
 
-<form th:action="@{/admin/speeches/save}"
-      th:object="${speech}"
-      method="post">
+    <span sec:authorize="hasRole('ADMIN')">
+        <a th:href="@{/admin}">Admin Dashboard</a>
+    </span>
 
-    <input type="hidden" th:field="*{id}" />
+    <span sec:authorize="isAnonymous()">
+        <a th:href="@{/login}">Login</a>
+    </span>
 
-    <!-- Title -->
-    <div>
-        <label>Title:</label>
-        <input type="text" th:field="*{title}" />
-        <div th:if="${#fields.hasErrors('title')}"
-             th:errors="*{title}"
-             style="color:red"></div>
+    <span sec:authorize="isAuthenticated()">
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-secondary">Logout</button>
+        </form>
+    </span>
+</div>
+
+<div class="page">
+    <div class="container">
+
+        <div class="card">
+
+            <h1 class="page-title"
+                th:text="${speech.id == null} ? 'Create Speech' : 'Edit Speech'">
+            </h1>
+
+            <form th:action="@{/admin/speeches/save}"
+                  th:object="${speech}"
+                  method="post">
+
+                <input type="hidden" th:field="*{id}" />
+
+                <!-- Title -->
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text"
+                           th:field="*{title}"
+                           class="form-control"/>
+
+                    <div th:if="${#fields.hasErrors('title')}"
+                         th:errors="*{title}"
+                         class="error-text">
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="form-group">
+                    <label class="form-label">Content</label>
+                    <textarea th:field="*{content}"
+                              class="form-control">
+                    </textarea>
+                </div>
+
+                <!-- Audio URL -->
+                <div class="form-group">
+                    <label class="form-label">Audio URL (optional)</label>
+                    <input type="text"
+                           th:field="*{audioUrl}"
+                           class="form-control"/>
+                </div>
+
+                <!-- Person Dropdown -->
+                <div class="form-group">
+                    <label class="form-label">Person</label>
+                    <select th:field="*{person.id}"
+                            class="form-control">
+                        <option value="">-- Select Person --</option>
+                        <option th:each="p : ${people}"
+                                th:value="${p.id}"
+                                th:text="${p.name}">
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Topic Dropdown -->
+                <div class="form-group">
+                    <label class="form-label">Topic</label>
+                    <select th:field="*{topic.id}"
+                            class="form-control">
+                        <option value="">-- Select Topic --</option>
+                        <option th:each="t : ${topics}"
+                                th:value="${t.id}"
+                                th:text="${t.name}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mt-20">
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
+
+                    <a th:href="@{/admin/speeches}"
+                       class="btn btn-secondary">
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+
     </div>
-
-    <!-- Content -->
-    <div>
-        <label>Content:</label>
-        <textarea th:field="*{content}" rows="6"></textarea>
-    </div>
-
-    <!-- Audio URL -->
-    <div>
-        <label>Audio URL (optional):</label>
-        <input type="text" th:field="*{audioUrl}" />
-    </div>
-
-    <!-- Person Dropdown -->
-    <div>
-        <label>Person:</label>
-        <select th:field="*{person}">
-            <option value="">-- Select Person --</option>
-            <option th:each="p : ${people}"
-                    th:value="${p}"
-                    th:text="${p.name}">
-            </option>
-        </select>
-    </div>
-
-    <button type="submit">Save</button>
-</form>
-
-<br>
-<a th:href="@{/admin/speeches}">Back</a>
+</div>
 
 </body>
 </html>

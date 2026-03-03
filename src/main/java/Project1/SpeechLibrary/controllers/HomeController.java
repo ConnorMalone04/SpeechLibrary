@@ -23,6 +23,12 @@ public class HomeController {
         return "home";
     }
 
+    // login page
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
     // view speech
     @GetMapping("/speeches/{id}")
     public String viewSpeech(@PathVariable Long id, Model model) {

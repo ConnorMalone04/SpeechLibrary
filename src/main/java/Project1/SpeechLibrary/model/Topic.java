@@ -19,6 +19,7 @@ public class Topic {
     private String name;
 
     // getters and setters
+
     public Long getId() {
         return id;
     }

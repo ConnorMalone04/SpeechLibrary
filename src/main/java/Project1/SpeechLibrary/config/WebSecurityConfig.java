@@ -17,23 +17,26 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity 
-public class SecurityConfig {
+public class WebSecurityConfig {
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            // allow anyone to access all pages except /admin/**
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/home", "/login", "/speeches/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/dashboard", true)
                 .permitAll()
             )
-            .logout(LogoutConfigurer::permitAll)
-            .csrf(csrf -> csrf.disable()); // optional for dev
+            // Optional logout
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .permitAll()
+            )
+            .csrf(csrf -> csrf.disable());
 
         return http.build();
     }
@@ -46,8 +49,8 @@ public class SecurityConfig {
     @Bean
     UserDetailsService userDetailsService(PasswordEncoder encoder) {
         // encode passwords
-        String adminPass = encoder.encode("adminpass");
-        String customerPass = encoder.encode("customerpass");
+        String adminPass = encoder.encode("password");
+        String customerPass = encoder.encode("password");
 
         UserDetails admin = User.withUsername("admin")
                                 .password(adminPass)
