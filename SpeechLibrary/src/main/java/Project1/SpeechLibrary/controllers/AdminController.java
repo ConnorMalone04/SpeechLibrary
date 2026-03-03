@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import Project1.SpeechLibrary.data.PersonRepository;
 import Project1.SpeechLibrary.data.SpeechRepository;
 import Project1.SpeechLibrary.data.TopicRepository;
+import Project1.SpeechLibrary.data.UserRepository;
 import Project1.SpeechLibrary.model.Person;
 import Project1.SpeechLibrary.model.Speech;
 import Project1.SpeechLibrary.model.Topic;
@@ -26,15 +27,18 @@ public class AdminController {
     private final TopicRepository topicRepository;
     private final PersonRepository personRepository;
     private final SpeechRepository speechRepository;
+    private final UserRepository userRepository;
 
     public AdminController(
             TopicRepository topicRepository,
             PersonRepository personRepository,
-            SpeechRepository speechRepository) {
+            SpeechRepository speechRepository,
+            UserRepository userRepository) {
 
         this.topicRepository = topicRepository;
         this.personRepository = personRepository;
         this.speechRepository = speechRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -250,16 +254,9 @@ public class AdminController {
     @GetMapping("/users")
     public String manageUsers(Model model, HttpSession session) {
 
-        if (!isAdmin(session)) {
-            return "redirect:/login";
-        }
+        if (!isAdmin(session)) return "redirect:/login";
 
-        // just show a static list of users
-        List<User> users = List.of(
-                new User("admin", "admin123", "ADMIN"),
-                new User("user", "user123", "CUSTOMER")
-        );
-        model.addAttribute("users", users);
+        model.addAttribute("users", userRepository.findAll());
         return "admin/users";
     }
 }
