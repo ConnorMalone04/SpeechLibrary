@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Speech Form</title>
+</head>
+<body>
+
+<h1 th:text="${speech.id == null} ? 'Create Speech' : 'Edit Speech'"></h1>
+
+<form th:action="@{/admin/speeches/save}"
+      th:object="${speech}"
+      method="post">
+
+    <input type="hidden" th:field="*{id}" />
+
+    <!-- Title -->
+    <div>
+        <label>Title:</label>
+        <input type="text" th:field="*{title}" />
+        <div th:if="${#fields.hasErrors('title')}"
+             th:errors="*{title}"
+             style="color:red"></div>
+    </div>
+
+    <!-- Content -->
+    <div>
+        <label>Content:</label>
+        <textarea th:field="*{content}" rows="6"></textarea>
+    </div>
+
+    <!-- Audio URL -->
+    <div>
+        <label>Audio URL (optional):</label>
+        <input type="text" th:field="*{audioUrl}" />
+    </div>
+
+    <!-- Person Dropdown -->
+    <div>
+        <label>Person:</label>
+        <select th:field="*{person}">
+            <option value="">-- Select Person --</option>
+            <option th:each="p : ${people}"
+                    th:value="${p}"
+                    th:text="${p.name}">
+            </option>
+        </select>
+    </div>
+
+    <button type="submit">Save</button>
+</form>
+
+<br>
+<a th:href="@{/admin/speeches}">Back</a>
+
+</body>
+</html>
