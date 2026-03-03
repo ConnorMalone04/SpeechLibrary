@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Speech Library</title>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div style="display:flex; justify-content:space-between; align-items:center;">
+    <h1>Speech Library</h1>
+    
+    <div>
+        <!-- Admin Dashboard link only for admins -->
+        <span sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/admin}">Admin Dashboard</a>
+        </span>
+
+        <!-- Login button only for anonymous users -->
+        <span sec:authorize="isAnonymous()">
+            <a th:href="@{/login}">Login</a>
+        </span>
+
+        <!-- Logout button only for authenticated users -->
+        <span sec:authorize="isAuthenticated()">
+            <form th:action="@{/logout}" method="post" style="display:inline">
+                <button type="submit">Logout</button>
+            </form>
+        </span>
+    </div>
+</div>
+
+<hr>
+
+<h2>All Speeches</h2>
+
+<ul>
+    <li th:each="speech : ${speeches}">
+        <a th:href="@{/speeches/{id}(id=${speech.id})}"
+           th:text="${speech.title}">
+        </a>
+        <span> - </span>
+        <span th:text="${speech.person.name}"></span>
+    </li>
+</ul>
+
+
+<div sec:authorize="hasRole('ADMIN')">
+    <a th:href="@{/admin/speeches/new}">Add New Speech</a>
+</div>
+
+</body>
+</html>

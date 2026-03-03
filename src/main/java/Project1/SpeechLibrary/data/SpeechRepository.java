@@ -8,5 +8,5 @@ import Project1.SpeechLibrary.model.Speech;
 
 public interface SpeechRepository extends JpaRepository<Speech, Long> {
     
-    List<Speech> findByTitleContainingIgnoreCase(String keyword);
+    List<Speech> findAllByOrderByTitleAsc();
 }

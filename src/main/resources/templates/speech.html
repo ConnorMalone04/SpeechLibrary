@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${speech.title}">Speech</title>
+</head>
+<body>
+
+<a th:href="@{/}">← Back to Home</a>
+
+<h1 th:text="${speech.title}"></h1>
+
+<h3>
+    By <span th:text="${speech.person.name}"></span>
+</h3>
+
+<p th:text="${speech.content}"></p>
+
+<div th:if="${speech.audioUrl != null}">
+    <p>
+        Audio:
+        <a th:href="${speech.audioUrl}" target="_blank">
+            Listen
+        </a>
+    </p>
+</div>
+
+</body>
+</html>
