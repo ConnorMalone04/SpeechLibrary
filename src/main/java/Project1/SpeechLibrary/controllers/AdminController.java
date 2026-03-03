@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import Project1.SpeechLibrary.data.PersonRepository;
 import Project1.SpeechLibrary.data.SpeechRepository;
 import Project1.SpeechLibrary.data.TopicRepository;
-import Project1.SpeechLibrary.data.UserRepository;
 import Project1.SpeechLibrary.model.Person;
 import Project1.SpeechLibrary.model.Speech;
 import Project1.SpeechLibrary.model.Topic;
@@ -25,17 +24,14 @@ public class AdminController {
     private final TopicRepository topicRepository;
     private final PersonRepository personRepository;
     private final SpeechRepository speechRepository;
-    private final UserRepository userRepository;
 
     public AdminController(
             TopicRepository topicRepository,
             PersonRepository personRepository,
-            SpeechRepository speechRepository,
-            UserRepository userRepository) {
+            SpeechRepository speechRepository) {
         this.topicRepository = topicRepository;
         this.personRepository = personRepository;
         this.speechRepository = speechRepository;
-        this.userRepository = userRepository;
     }
 
 /* --------------------------------------------------------------
@@ -181,13 +177,5 @@ public class AdminController {
         speechRepository.deleteById(id);
         return "redirect:/admin/speeches";
     }
-/* --------------------------------------------------------------
-                            USERS 
--------------------------------------------------------------- */ 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/users")
-    public String manageUsers(Model model) {
-        model.addAttribute("users", userRepository.findAll());
-        return "admin/users";
-    }
+
 }
