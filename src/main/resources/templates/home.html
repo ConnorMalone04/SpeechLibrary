@@ -1,49 +1,123 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <title>Speech Library</title>
 </head>
+
 <body>
 
-<!-- Navbar -->
-<div class="navbar">
-    <h1 class="page-title">Speech Library</h1>
+    <!-- Navbar -->
+    <div class="navbar">
+        <h1 class="page-title">Speech Library</h1>
 
-    <a th:href="@{/}" class="btn btn-secondary">Home</a>
+        <a th:href="@{/}" class="btn btn-secondary">Home</a>
 
-    <span sec:authorize="hasRole('ADMIN')">
-        <a th:href="@{/admin}" class="btn btn-secondary">Admin Dashboard</a>
-    </span>
+        <span sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/admin}" class="btn btn-secondary">Admin Dashboard</a>
+        </span>
 
-    <span sec:authorize="isAnonymous()">
-        <a th:href="@{/login}" class="btn btn-primary">Login</a>
-    </span>
+        <span sec:authorize="isAnonymous()">
+            <a th:href="@{/login}" class="btn btn-primary">Login</a>
+        </span>
 
-    <span sec:authorize="isAuthenticated()">
-        <form th:action="@{/logout}" method="post" style="display:inline;">
-            <button type="submit" class="btn btn-secondary">Logout</button>
-        </form>
-    </span>
-</div>
+        <span sec:authorize="isAuthenticated()">
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-secondary">Logout</button>
+            </form>
+        </span>
 
-<hr>
-
-<div class="page">
-    <div class="container">
-        <div class="card">
-            <h2 class="page-title">All Speeches</h2>
-
-            <ul class="list">
-                <li th:each="speech : ${speeches}" class="list-item">
-                    <a th:href="@{/speeches/{id}(id=${speech.id})}" th:text="${speech.title}" class="speech-link"></a>
-                    <span th:text="' - ' + (${speech.person?.name} ?: 'Unknown')"></span>
-                </li>
-            </ul>
+        <div class="mb-20">
+            <form th:action="@{/search}" method="get" class="search-bar">
+                <input type="text"
+                       name="query"
+                       th:value="${query}"
+                       placeholder="Search speeches, people, or topics..."
+                       class="form-control search-input" />
+        
+                <button type="submit" class="btn btn-primary">
+                    Search
+                </button>
+            </form>
         </div>
     </div>
-</div>
+
+    <hr>
+
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>
+                    <a th:if="${!isSearch}"
+                       th:href="@{/(sortField='title', sortDir=${reverseSortDir})}">
+                        Title
+                        <span th:if="${sortField == 'title'}"
+                              th:text="${sortDir == 'asc'} ? ' ▲' : ' ▼'">
+                        </span>
+                    </a>
+    
+                    <a th:if="${isSearch}"
+                       th:href="@{/search(query=${query}, sortField='title', sortDir=${reverseSortDir})}">
+                        Title
+                        <span th:if="${sortField == 'title'}"
+                              th:text="${sortDir == 'asc'} ? ' ▲' : ' ▼'">
+                        </span>
+                    </a>
+                </th>
+    
+                <th>
+                    <a th:if="${!isSearch}"
+                       th:href="@{/(sortField='person', sortDir=${reverseSortDir})}">
+                        Speaker
+                        <span th:if="${sortField == 'person'}"
+                              th:text="${sortDir == 'asc'} ? ' ▲' : ' ▼'">
+                        </span>
+                    </a>
+    
+                    <a th:if="${isSearch}"
+                       th:href="@{/search(query=${query}, sortField='person', sortDir=${reverseSortDir})}">
+                        Speaker
+                        <span th:if="${sortField == 'person'}"
+                              th:text="${sortDir == 'asc'} ? ' ▲' : ' ▼'">
+                        </span>
+                    </a>
+                </th>
+    
+                <th>
+                    <a th:if="${!isSearch}"
+                       th:href="@{/(sortField='topic', sortDir=${reverseSortDir})}">
+                        Topic
+                        <span th:if="${sortField == 'topic'}"
+                              th:text="${sortDir == 'asc'} ? ' ▲' : ' ▼'">
+                        </span>
+                    </a>
+    
+                    <a th:if="${isSearch}"
+                       th:href="@{/search(query=${query}, sortField='topic', sortDir=${reverseSortDir})}">
+                        Topic
+                        <span th:if="${sortField == 'topic'}"
+                              th:text="${sortDir == 'asc'} ? ' ▲' : ' ▼'">
+                        </span>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+    
+        <tbody>
+            <tr th:each="speech : ${speeches}">
+                <td>
+                    <a th:href="@{/speeches/{id}(id=${speech.id})}"
+                       th:text="${speech.title}">
+                    </a>
+                </td>
+                <td th:text="${speech.person?.name ?: 'Unknown'}"></td>
+                <td th:text="${speech.topic?.name ?: '—'}"></td>
+            </tr>
+        </tbody>
+    </table>
 
 </body>
+
 </html>

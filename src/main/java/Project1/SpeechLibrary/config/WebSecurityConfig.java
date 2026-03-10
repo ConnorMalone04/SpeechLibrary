@@ -25,6 +25,7 @@ public class WebSecurityConfig {
             // allow anyone to access all pages except /admin/**
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/search").authenticated()
                 .anyRequest().permitAll()
             )
             .formLogin(form -> form
