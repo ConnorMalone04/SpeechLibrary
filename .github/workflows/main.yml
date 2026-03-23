@@ -36,22 +36,21 @@ jobs:
       - name: Wait for app to start
         run: |
           for i in {1..60}; do
-            if curl -fsS http://localhost:8080; then
+            if curl -fsS http://localhost:8080/; then
               echo "App is up"
               exit 0
             fi
-
+      
             if ! ps -p $(cat app.pid) > /dev/null; then
-              echo "App process stopped"
+              echo "App crashed"
               cat app.log
               exit 1
             fi
-
-            echo "Waiting for app..."
+      
             sleep 2
           done
-
-          echo "App failed to start in time"
+      
+          echo "App failed to start"
           cat app.log
           exit 1
 
