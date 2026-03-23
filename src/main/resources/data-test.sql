@@ -1,0 +1,2 @@
+INSERT INTO speech (id, title, speaker, topic) VALUES (1, 'Test Title', 'Test Speaker', 'Test Topic');
+INSERT INTO speech (id, title, speaker, topic) VALUES (2, 'Another Speech', 'Jane Doe', 'History');
