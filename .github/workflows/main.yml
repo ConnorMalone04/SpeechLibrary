@@ -26,6 +26,9 @@ jobs:
       - name: Build project
         run: ./mvnw clean package -DskipTests
 
+      - name: Generate test data
+        run: NUM_SPEECHES=5000 python3 scripts/generate_test_data.py
+      
       - name: Start app with testperf profile
         run: |
           nohup java -jar target/*.jar --spring.profiles.active=testperf > app.log 2>&1 &
