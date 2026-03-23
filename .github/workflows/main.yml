@@ -30,17 +30,28 @@ jobs:
         run: |
           nohup java -jar target/*.jar --spring.profiles.active=testperf > app.log 2>&1 &
           echo $! > app.pid
+          sleep 5
+          cat app.log
 
       - name: Wait for app to start
         run: |
-          for i in {1..30}; do
+          for i in {1..60}; do
             if curl -fsS http://localhost:8080/actuator/health; then
               echo "App is up"
               exit 0
             fi
+
+            if ! ps -p $(cat app.pid) > /dev/null; then
+              echo "App process stopped"
+              cat app.log
+              exit 1
+            fi
+
+            echo "Waiting for app..."
             sleep 2
           done
-          echo "App failed to start"
+
+          echo "App failed to start in time"
           cat app.log
           exit 1
 
