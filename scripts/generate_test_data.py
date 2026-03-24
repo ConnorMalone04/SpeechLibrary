@@ -45,8 +45,12 @@ with open(output_path, "w") as f:
         date = f"2020-01-{(i % 28) + 1:02d}"
 
         f.write(
-            "INSERT INTO speech (id, title, content, audio_url, person_id, topic_id, date) "
-            f"VALUES ({speech_id}, '{title}', '{content}', null, {person_id}, {topic_id}, '{date}');\n"
+            "INSERT INTO speech (id, title, content, audio_url, person_id, date) "
+            f"VALUES ({speech_id}, '{title}', '{content}', null, {person_id}, '{date}');\n"
+        )
+
+        f.write(
+            f"INSERT INTO speech_topics (speech_id, topic_id) VALUES ({speech_id}, {topic_id});\n"
         )
 
         speech_id += 1
