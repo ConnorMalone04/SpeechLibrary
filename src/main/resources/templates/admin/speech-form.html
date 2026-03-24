@@ -72,6 +72,14 @@
                            class="form-control"/>
                 </div>
 
+                <!-- Date -->
+                <div class="form-group">
+                    <label class="form-label">Date</label>
+                    <input type="date"
+                           th:field="*{date}"
+                           class="form-control"/>
+                </div>
+
                 <!-- Person Dropdown -->
                 <div class="form-group">
                     <label class="form-label">Person</label>
@@ -87,15 +95,18 @@
 
                 <!-- Topic Dropdown -->
                 <div class="form-group">
-                    <label class="form-label">Topic</label>
-                    <select th:field="*{topic.id}"
-                            class="form-control">
-                        <option value="">-- Select Topic --</option>
-                        <option th:each="t : ${topics}"
-                                th:value="${t.id}"
-                                th:text="${t.name}">
-                        </option>
-                    </select>
+                    <label class="form-label">Topics</label>
+                
+                    <div class="checkbox-group">
+                        <div th:each="t : ${topics}" class="checkbox-item">
+                            <label>
+                                <input type="checkbox"
+                                       th:field="*{topics}"
+                                       th:value="${t.id}" />
+                                <span th:text="${t.name}"></span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="mt-20">

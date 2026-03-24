@@ -42,9 +42,11 @@ with open(output_path, "w") as f:
         title = f"Test Speech {speech_id}"
         content = ("Lorem ipsum " * 20).replace("'", "''")
 
+        date = f"2020-01-{(i % 28) + 1:02d}"
+
         f.write(
-            "INSERT INTO speech (id, title, content, audio_url, person_id, topic_id) "
-            f"VALUES ({speech_id}, '{title}', '{content}', null, {person_id}, {topic_id});\n"
+            "INSERT INTO speech (id, title, content, audio_url, person_id, topic_id, date) "
+            f"VALUES ({speech_id}, '{title}', '{content}', null, {person_id}, {topic_id}, '{date}');\n"
         )
 
         speech_id += 1

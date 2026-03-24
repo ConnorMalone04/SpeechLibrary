@@ -28,17 +28,32 @@
 
         <h1 th:text="${speech.title}" class="page-title"></h1>
 
-        <h3>By <span th:text="${speech.person?.name ?: 'Unknown'}"></span></h3>
+        <h3>
+            By <span th:text="${speech.person?.name ?: 'Unknown'}"></span>
+        </h3>
+
+        <p>
+            <strong>Topics:</strong>
+            <span th:if="${#sets.isEmpty(speech.topics)}">—</span>
+            <span th:unless="${#sets.isEmpty(speech.topics)}"
+                  th:each="topic, iterStat : ${speech.topics}">
+                <span th:text="${topic.name}"></span><span th:if="${!iterStat.last}">, </span>
+            </span>
+        </p>
+
+        <p>
+            <strong>Date:</strong>
+            <span th:text="${speech.date != null ? #temporals.format(speech.date, 'MMM dd, yyyy') : '—'}"></span>
+        </p>
 
         <p th:text="${speech.content}" class="speech-content"></p>
 
-        <div th:if="${speech.audioUrl != null}">
-            <p>
-                Audio: 
-                <a th:href="${speech.audioUrl}" target="_blank" class="btn btn-primary btn-small">
-                    Listen
-                </a>
-            </p>
+        <div th:if="${speech.audioUrl != null and !#strings.isEmpty(speech.audioUrl)}">
+            <p><strong>Audio:</strong></p>
+            <audio controls style="width: 100%;">
+                <source th:src="${speech.audioUrl}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
         </div>
 
         <br/>

@@ -101,7 +101,7 @@ public class HomeController {
     private String getActualSortField(String sortField) {
         return switch (sortField) {
             case "person" -> "person.name";
-            case "topic" -> "topic.name";
+            case "date" -> "date";
             default -> "title";
         };
     }

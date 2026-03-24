@@ -40,7 +40,6 @@
                 </a>
             </div>
 
-            <!-- Empty state -->
             <div th:if="${#lists.isEmpty(speeches)}" class="muted mb-20">
                 No speeches found. Create your first one.
             </div>
@@ -51,7 +50,8 @@
                     <tr>
                         <th>Title</th>
                         <th>Person</th>
-                        <th>Topic</th>
+                        <th>Topics</th>
+                        <th>Date</th>
                         <th style="width:220px;">Actions</th>
                     </tr>
                 </thead>
@@ -60,7 +60,14 @@
                     <tr th:each="speech : ${speeches}">
                         <td th:text="${speech.title}"></td>
                         <td th:text="${speech.person?.name ?: '—'}"></td>
-                        <td th:text="${speech.topic?.name ?: '—'}"></td>
+                        <td>
+                            <span th:if="${#sets.isEmpty(speech.topics)}">—</span>
+                            <span th:unless="${#sets.isEmpty(speech.topics)}"
+                                  th:each="topic, iterStat : ${speech.topics}">
+                                <span th:text="${topic.name}"></span><span th:if="${!iterStat.last}">, </span>
+                            </span>
+                        </td>
+                        <td th:text="${speech.date != null ? #temporals.format(speech.date, 'MMM dd, yyyy') : '—'}"></td>
                         <td>
                             <div class="action-group">
                                 <a th:href="@{/admin/speeches/edit/{id}(id=${speech.id})}"

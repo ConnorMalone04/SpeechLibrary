@@ -82,18 +82,20 @@
                     </a>
                 </th>
 
+                <th>Topics</th>
+
                 <th>
                     <a th:if="${!isSearch}"
-                       th:href="@{/(page=${currentPage}, size=${pageSize}, sortField='topic', sortDir=${reverseSortDir})}">
-                        Topic
-                        <span th:if="${sortField == 'topic'}"
+                       th:href="@{/(page=${currentPage}, size=${pageSize}, sortField='date', sortDir=${reverseSortDir})}">
+                        Date
+                        <span th:if="${sortField == 'date'}"
                               th:text="${sortDir == 'asc'} ? ' ▲' : ' ▼'"></span>
                     </a>
 
                     <a th:if="${isSearch}"
-                       th:href="@{/search(query=${query}, page=${currentPage}, size=${pageSize}, sortField='topic', sortDir=${reverseSortDir})}">
-                        Topic
-                        <span th:if="${sortField == 'topic'}"
+                       th:href="@{/search(query=${query}, page=${currentPage}, size=${pageSize}, sortField='date', sortDir=${reverseSortDir})}">
+                        Date
+                        <span th:if="${sortField == 'date'}"
                               th:text="${sortDir == 'asc'} ? ' ▲' : ' ▼'"></span>
                     </a>
                 </th>
@@ -107,7 +109,14 @@
                        th:text="${speech.title}"></a>
                 </td>
                 <td th:text="${speech.person?.name ?: 'Unknown'}"></td>
-                <td th:text="${speech.topic?.name ?: '—'}"></td>
+                <td>
+                    <span th:if="${speech.topics == null or #lists.isEmpty(speech.topics)}">—</span>
+                    <span th:unless="${speech.topics == null or #lists.isEmpty(speech.topics)}"
+                          th:each="topic, iterStat : ${speech.topics}">
+                        <span th:text="${topic.name}"></span><span th:if="${!iterStat.last}">, </span>
+                    </span>
+                </td>
+                <td th:text="${speech.date != null ? #temporals.format(speech.date, 'MMM dd, yyyy') : '—'}"></td>
             </tr>
         </tbody>
     </table>
