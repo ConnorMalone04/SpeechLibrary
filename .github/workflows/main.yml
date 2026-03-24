@@ -68,8 +68,6 @@ jobs:
           name: app-log
           path: app.log
 
-
-
       - name: Install k6
         run: |
           sudo apt-get update
@@ -82,13 +80,38 @@ jobs:
       - name: Run staged load test
         run: k6 run perf/home.js
 
-
-
-
-
       - name: Stop app
         if: always()
         run: |
           if [ -f app.pid ]; then
             kill $(cat app.pid) || true
+          fi
+
+  deploy:
+    name: Deploy to Render
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    environment: render
+
+    steps:
+      - name: Trigger Render Deploy
+        run: |
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"clearCache":"clear"}')
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "Response: $BODY"
+          echo "HTTP Status: $HTTP_CODE"
+
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "Deployment triggered successfully"
+          else
+            echo "Deployment failed with status $HTTP_CODE"
+            echo "$BODY"
+            exit 1
           fi
